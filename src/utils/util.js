@@ -12,10 +12,21 @@ export function printStyleLog(tag, content, style) {
         color: '#0f0',
         'font-size': '18px',
     }, style);
-    const styleStr = '';
+    const styleStr = cssObj2CssStr(style);
     console.log(`%c ${tag}`, styleStr, content);
 }
 
-export function cssObj2CssStr(obj) {
-
+/**
+ * css对象转字符串形式
+ * @param {{[k: string]: string}} cssObj 
+ */
+export function cssObj2CssStr(cssObj) {
+    if(!cssObj) {
+        return '';
+    }
+    let str = '';
+    for(let key in cssObj) {
+        str += `${key}:${cssObj[key]};`;
+    }
+    return str;
 }

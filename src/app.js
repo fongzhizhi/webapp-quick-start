@@ -1,7 +1,8 @@
-window.onload = () => {
-    // pageInit();
-};
+import {printStyleLog} from './utils/util'
 
-export function pageInit() {
-    return 'pageInit';
-}
+window.onload = () => {
+    printStyleLog('Jinx', {
+        name: 'Jinx',
+        age: 17,
+    });
+};
