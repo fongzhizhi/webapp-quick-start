@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "babel": "./node_modules/.bin/babel src -d dist"
+    "dev": "node app.config.js",
+    "babel": "./node_modules/.bin/babel src -d dist",
+    "bind": "./node_modules/.bin/rollup -c rollup.config.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,12 @@
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4"
+    "@babel/preset-env": "^7.16.4",
+    "@rollup/plugin-babel": "^5.3.0",
+    "less": "^4.1.2",
+    "rollup": "^2.60.1"
+  },
+  "dependencies": {
+    "ejs": "^3.1.6"
   }
 }
