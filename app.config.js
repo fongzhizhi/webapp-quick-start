@@ -1,13 +1,18 @@
 const babel = require('@babel/core');
 const fs = require('fs');
 const path = require('path');
+const ejs = require('ejs');
+const less = require('less');
 
 /**
  * 全局配置
  */
 const appConfig = {
-    BASE_URL: '/',
+    BASE_URL: './',
     dest: 'dist',
+    page_title: '',
+    css_path: '',
+    js_path: '',
 };
 
 function init() {
@@ -52,29 +57,68 @@ function createDir(dir) {
 }
 
 /**
+ * 获取目标路径
+ * @param {string} path 
+ */
+function getDestPath(extendPath) {
+    return path.resolve(appConfig.dest, extendPath);
+}
+
+/**
+ * 打印任务日志
+ * @param {string} title 
+ * @param {string[]} msgs 
+ */
+function taskLog(title, ...msgs) {
+    console.log(`[${title}]`, ...msgs);
+}
+
+/**
  * js编译
  */
 function jsComplier() {
-    // const babelConfig = JSON.parse(fs.readFileSync('babel.config.json').toString());
-    // const sortDirs = ['src/utils', 'src'];
-    // let data = '';
-    // let index = 0;
-    // sortDirs.forEach(dir => {
-    //     const obj = readDirs(dir, '.js', false);
-    //     obj.forEach(info => {
-    //         index++;
-    //         babel.transformFileAsync(info.path, babelConfig).then(res => {
-    //             data += `\n// fileSource: ${info.relativePath}\n`;
-    //             data += res.code;
-    //             if(--index === 0) {
-    //                 console.log('compiler to app.js');
-    //                 fs.writeFileSync(path.resolve(appConfig.dest, 'app.js'), data);
-    //             }
-    //         });
-    //     });
-    // });
+    appConfig.js_path = 'app.js';
+    taskLog('jsComplier', 'pass');
+}
+
+/**
+ * html渲染
+ */
+function htmlTempRender() {
+    ejs.renderFile(path.resolve(__dirname, 'public/index.html'), appConfig, (err, str) => {
+        if(err) throw err;
+        const htmlPath = getDestPath('index.html');
+        fs.writeFileSync(htmlPath, str);
+        taskLog('htmlTempRender', 'html file in', htmlPath);
+    })
+}
+
+/**
+ * css编译
+ */
+function cssCompiler() {
+    let index = 0;
+    readDirs('src/styles', '.less', false).forEach(item => {
+        index++;
+        const content = fs.readFileSync(item.path).toString();
+        let cssStr = '';
+        less.render(content, (err, res) => {
+            if(err) throw err;
+            cssStr += `\n/* [fileSource] ${item.relativePath} */ \n`;
+            cssStr += res.css;
+            if(--index === 0) {
+                const cssName = 'main.css';
+                const cssPath = getDestPath(cssName);
+                appConfig.css_path = cssName;
+                fs.writeFileSync(cssPath, cssStr);
+                taskLog('cssCompiler', 'css file in', cssPath);
+            }
+        });
+    });
 }
 
 // ===> run
 init();
+cssCompiler();
 jsComplier()
+htmlTempRender();
