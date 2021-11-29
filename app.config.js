@@ -1,28 +1,28 @@
 // const babel = require('@babel/core');
-const fs = require('fs');
-const path = require('path');
-const ejs = require('ejs');
-const less = require('less');
-const del = require('del');
-const express = require('express')
+const fs = require("fs");
+const path = require("path");
+const ejs = require("ejs");
+const less = require("less");
+const del = require("del");
+const express = require("express");
 
 /**
  * 全局配置
  */
 const appConfig = {
-    BASE_URL: './',
-    dest: 'dist',
-    page_title: '',
-    css_path: '',
-    js_path: '',
-    assets_path: '',
+  BASE_URL: "./",
+  dest: "dist",
+  page_title: "",
+  css_path: "",
+  js_path: "",
+  assets_path: "",
 };
 
 /**
  * 一些初始化工作
  */
 function appInit() {
-    createDir(path.resolve(__dirname, appConfig.dest));
+  createDir(path.resolve(__dirname, appConfig.dest));
 }
 
 /**
@@ -30,11 +30,11 @@ function appInit() {
  * @param {string} dir
  */
 function createDir(dir) {
-    try {
-        fs.statSync(dir);
-    } catch (error) {
-        fs.mkdirSync(dir);
-    }
+  try {
+    fs.statSync(dir);
+  } catch (error) {
+    fs.mkdirSync(dir);
+  }
 }
 
 /**
@@ -44,23 +44,24 @@ function createDir(dir) {
  * @param {boolean?} deep 深度遍历
  * @returns {{relativePath: string;path: string;fileName: string;}[]}
  */
- function readDir(dir, accept, deep) {
-    const files = [];
-    const res = fs.readdirSync(dir);
-    res && res.forEach(p => {
-        const filePath = path.resolve(dir, p);
-        const state = fs.statSync(filePath);
-        if(state.isDirectory()) {
-            deep && files.push(...readDir(filePath, accept, deep));
-        } else if(!accept || filePath.endsWith(accept)) {
-            files.push({
-                path: filePath,
-                relativePath: path.join(dir, p),
-                fileName: p,
-            });
-        }
+function readDir(dir, accept, deep) {
+  const files = [];
+  const res = fs.readdirSync(dir);
+  res &&
+    res.forEach((p) => {
+      const filePath = path.resolve(dir, p);
+      const state = fs.statSync(filePath);
+      if (state.isDirectory()) {
+        deep && files.push(...readDir(filePath, accept, deep));
+      } else if (!accept || filePath.endsWith(accept)) {
+        files.push({
+          path: filePath,
+          relativePath: path.join(dir, p),
+          fileName: p,
+        });
+      }
     });
-    return files;
+  return files;
 }
 
 /**
@@ -68,7 +69,7 @@ function createDir(dir) {
  * @param {string} extendPath
  */
 function getDestPath(extendPath) {
-    return path.resolve(appConfig.dest, extendPath);
+  return path.resolve(appConfig.dest, extendPath);
 }
 
 /**
@@ -77,95 +78,99 @@ function getDestPath(extendPath) {
  * @param {string[]} msgs
  */
 function taskLog(title, ...msgs) {
-    console.log(`[${title}]`, ...msgs);
+  console.log(`[${title}]`, ...msgs);
 }
 
 /**
  * html渲染
  */
 function htmlTempRender() {
-    ejs.renderFile(path.resolve(__dirname, 'public/index.html'), appConfig, (err, str) => {
-        if(err) throw err;
-        const htmlPath = getDestPath('index.html');
-        fs.writeFileSync(htmlPath, str);
-        taskLog('htmlTempRender', 'html file in', htmlPath);
-    })
+  ejs.renderFile(
+    path.resolve(__dirname, "public/index.html"),
+    appConfig,
+    (err, str) => {
+      if (err) throw err;
+      const htmlPath = getDestPath("index.html");
+      fs.writeFileSync(htmlPath, str);
+      taskLog("htmlTempRender", "html file in", htmlPath);
+    }
+  );
 }
 
 /**
  * css编译
  */
 function cssCompiler() {
-    let index = 0;
-    readDir('src/styles', '.less', false).forEach(item => {
-        index++;
-        const content = fs.readFileSync(item.path).toString();
-        let cssStr = '';
-        less.render(content, (err, res) => {
-            if(err) throw err;
-            cssStr += `\n/* [fileSource] ${item.relativePath} */ \n`;
-            cssStr += res.css;
-            if(--index === 0) {
-                const cssName = 'main.css';
-                const cssPath = getDestPath(cssName);
-                appConfig.css_path = cssName;
-                fs.writeFileSync(cssPath, cssStr);
-                taskLog('cssCompiler', 'css file in', cssPath);
-            }
-        });
+  let index = 0;
+  readDir("src/styles", ".less", false).forEach((item) => {
+    index++;
+    const content = fs.readFileSync(item.path).toString();
+    let cssStr = "";
+    less.render(content, (err, res) => {
+      if (err) throw err;
+      cssStr += `\n/* [fileSource] ${item.relativePath} */ \n`;
+      cssStr += res.css;
+      if (--index === 0) {
+        const cssName = "main.css";
+        const cssPath = getDestPath(cssName);
+        appConfig.css_path = cssName;
+        fs.writeFileSync(cssPath, cssStr);
+        taskLog("cssCompiler", "css file in", cssPath);
+      }
     });
+  });
 }
 
 /**
  * js编译
  */
 function jsComplier() {
-    appConfig.js_path = 'app.js';
-    taskLog('jsComplier', 'pass');
+  appConfig.js_path = "app.js";
+  taskLog("jsComplier", "pass");
 }
 
 /**
  * 清除缓存目录
  */
 function clearDist() {
-    del.sync(appConfig.dest);
+  del.sync(appConfig.dest);
 }
 
 /**
  * 资源文件clone
  */
 function assetsClone() {
-    const dirName = 'assets';
-    const copyDest = path.resolve(appConfig.dest, dirName);
-    createDir(copyDest);
-    readDir(path.resolve('src', dirName), '', false).forEach(item => {
-        fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
-    });
-    readDir('public', '.ico', false).forEach(item => {
-        fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
-    });
-    appConfig.assets_path = appConfig.BASE_URL + dirName + '/';
+  const dirName = "assets";
+  const copyDest = path.resolve(appConfig.dest, dirName);
+  createDir(copyDest);
+  readDir(path.resolve("src", dirName), "", false).forEach((item) => {
+    fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
+  });
+  readDir("public", ".ico", false).forEach((item) => {
+    fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
+  });
+  appConfig.assets_path = appConfig.BASE_URL + dirName + "/";
 }
 
 /**
  * 服务器
  */
 function server() {
-    const app = express();
-    const port = 3000;
-    app.use(express.static(appConfig.dest));
-    app.get('/', (req, res) => {
-        res.sendFile(path.resolve(appConfig.dest, 'index.html'))
-    });
-    app.listen(port, () => {
-        taskLog('server', `App listening at http://localhost:${port}`);
-    });
+  const app = express();
+  const port = 3000;
+  app.use(express.static(appConfig.dest));
+  app.get("/", (req, res) => {
+    res.sendFile(path.resolve(appConfig.dest, "index.html"));
+  });
+  app.listen(port, () => {
+    taskLog("server", `App listening at http://localhost:${port}`);
+  });
 }
 
 // ===> app run
 clearDist();
 appInit();
-assetsClone()
+assetsClone();
 cssCompiler();
 jsComplier();
 htmlTempRender();
