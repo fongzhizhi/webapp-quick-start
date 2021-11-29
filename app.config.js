@@ -39,7 +39,7 @@ function createDir(dir) {
 /**
  * 读取指定目录下的文件路径
  * @param {string} dir 路径
- * @param {string} accept 接受的文件类型
+ * @param {string?} accept 接受的文件类型
  * @param {boolean?} deep 深度遍历
  * @returns {{relativePath: string;path: string;fileName: string;}[]}
  */
@@ -64,7 +64,7 @@ function createDir(dir) {
 
 /**
  * 获取目标路径
- * @param {string} path
+ * @param {string} extendPath
  */
 function getDestPath(extendPath) {
     return path.resolve(appConfig.dest, extendPath);

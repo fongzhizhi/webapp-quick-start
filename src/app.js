@@ -5,6 +5,6 @@ window.onload = () => {
         name: 'Jinx',
         age: 17,
     }, {
-        color: '#cccaaa'
+        color: '#41b883'
     });
 };
