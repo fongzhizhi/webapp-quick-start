@@ -14,6 +14,7 @@ const appConfig = {
     page_title: '',
     css_path: '',
     js_path: '',
+    assets_path: '',
 };
 
 /**
@@ -40,20 +41,21 @@ function createDir(dir) {
  * @param {string} dir 路径
  * @param {string} accept 接受的文件类型
  * @param {boolean?} deep 深度遍历
- * @returns {{relativePath: string;path: string;}[]}
+ * @returns {{relativePath: string;path: string;fileName: string;}[]}
  */
- function readDirs(dir, accept, deep) {
+ function readDir(dir, accept, deep) {
     const files = [];
     const res = fs.readdirSync(dir);
     res && res.forEach(p => {
         const filePath = path.resolve(dir, p);
         const state = fs.statSync(filePath);
         if(state.isDirectory()) {
-            deep && files.push(...readDirs(filePath, accept, deep));
+            deep && files.push(...readDir(filePath, accept, deep));
         } else if(!accept || filePath.endsWith(accept)) {
             files.push({
                 path: filePath,
                 relativePath: path.join(dir, p),
+                fileName: p,
             });
         }
     });
@@ -94,7 +96,7 @@ function htmlTempRender() {
  */
 function cssCompiler() {
     let index = 0;
-    readDirs('src/styles', '.less', false).forEach(item => {
+    readDir('src/styles', '.less', false).forEach(item => {
         index++;
         const content = fs.readFileSync(item.path).toString();
         let cssStr = '';
@@ -128,9 +130,26 @@ function clearDist() {
     del.sync(appConfig.dest);
 }
 
+/**
+ * 资源文件clone
+ */
+function assetsClone() {
+    const dirName = 'assets';
+    const copyDest = path.resolve(appConfig.dest, dirName);
+    createDir(copyDest);
+    readDir(path.resolve('src', dirName)).forEach(item => {
+        fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
+    });
+    readDir('public', '.ico').forEach(item => {
+        fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
+    });
+    appConfig.assets_path = appConfig.BASE_URL + dirName + '/';
+}
+
 // ===> run
 clearDist();
 appInit();
+assetsClone()
 cssCompiler();
 jsComplier();
 htmlTempRender();
