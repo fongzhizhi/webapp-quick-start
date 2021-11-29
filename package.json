@@ -9,7 +9,7 @@
     "babel": "./node_modules/.bin/babel src -d dist",
     "bind": "./node_modules/.bin/rollup -c rollup.config.js --watch",
     "prettier": "prettier --write src/**/*.js --write app.config.js",
-    "dev": "run-s app bind"
+    "dev": "run-p app bind"
   },
   "keywords": [],
   "author": "",
