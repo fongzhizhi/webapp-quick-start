@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
 const less = require('less');
+const del = require('del');
 
 /**
  * 全局配置
@@ -15,13 +16,16 @@ const appConfig = {
     js_path: '',
 };
 
-function init() {
+/**
+ * 一些初始化工作
+ */
+function appInit() {
     createDir(path.resolve(__dirname, appConfig.dest));
 }
 
 /**
  * 创建目录
- * @param {string} dir 
+ * @param {string} dir
  */
 function createDir(dir) {
     try {
@@ -58,7 +62,7 @@ function createDir(dir) {
 
 /**
  * 获取目标路径
- * @param {string} path 
+ * @param {string} path
  */
 function getDestPath(extendPath) {
     return path.resolve(appConfig.dest, extendPath);
@@ -66,19 +70,11 @@ function getDestPath(extendPath) {
 
 /**
  * 打印任务日志
- * @param {string} title 
- * @param {string[]} msgs 
+ * @param {string} title
+ * @param {string[]} msgs
  */
 function taskLog(title, ...msgs) {
     console.log(`[${title}]`, ...msgs);
-}
-
-/**
- * js编译
- */
-function jsComplier() {
-    appConfig.js_path = 'app.js';
-    taskLog('jsComplier', 'pass');
 }
 
 /**
@@ -117,8 +113,24 @@ function cssCompiler() {
     });
 }
 
+/**
+ * js编译
+ */
+function jsComplier() {
+    appConfig.js_path = 'app.js';
+    taskLog('jsComplier', 'pass');
+}
+
+/**
+ * 清除缓存目录
+ */
+function clearDist() {
+    del.sync(appConfig.dest);
+}
+
 // ===> run
-init();
+clearDist();
+appInit();
 cssCompiler();
-jsComplier()
+jsComplier();
 htmlTempRender();
