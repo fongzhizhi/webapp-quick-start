@@ -138,10 +138,10 @@ function assetsClone() {
     const dirName = 'assets';
     const copyDest = path.resolve(appConfig.dest, dirName);
     createDir(copyDest);
-    readDir(path.resolve('src', dirName)).forEach(item => {
+    readDir(path.resolve('src', dirName), '', false).forEach(item => {
         fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
     });
-    readDir('public', '.ico').forEach(item => {
+    readDir('public', '.ico', false).forEach(item => {
         fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
     });
     appConfig.assets_path = appConfig.BASE_URL + dirName + '/';
@@ -162,7 +162,7 @@ function server() {
     });
 }
 
-// ===> run
+// ===> app run
 clearDist();
 appInit();
 assetsClone()
