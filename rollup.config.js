@@ -21,4 +21,7 @@ export default {
         jquery: '$'
     },
     sourcemap: true,
+    watch: {
+        include: 'src/**'
+    }
   };

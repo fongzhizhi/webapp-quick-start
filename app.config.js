@@ -1,9 +1,10 @@
-const babel = require('@babel/core');
+// const babel = require('@babel/core');
 const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
 const less = require('less');
 const del = require('del');
+const express = require('express')
 
 /**
  * 全局配置
@@ -146,6 +147,21 @@ function assetsClone() {
     appConfig.assets_path = appConfig.BASE_URL + dirName + '/';
 }
 
+/**
+ * 服务器
+ */
+function server() {
+    const app = express();
+    const port = 3000;
+    app.use(express.static(appConfig.dest));
+    app.get('/', (req, res) => {
+        res.sendFile(path.resolve(appConfig.dest, 'index.html'))
+    });
+    app.listen(port, () => {
+        taskLog('server', `App listening at http://localhost:${port}`);
+    });
+}
+
 // ===> run
 clearDist();
 appInit();
@@ -153,3 +169,4 @@ assetsClone()
 cssCompiler();
 jsComplier();
 htmlTempRender();
+server();
