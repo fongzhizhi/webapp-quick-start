@@ -92,7 +92,7 @@ function htmlTempRender() {
       if (err) throw err;
       const htmlPath = getDestPath("index.html");
       fs.writeFileSync(htmlPath, str);
-      taskLog("htmlTempRender", "html file in", htmlPath);
+      taskLog("htmlTempRender", "html template was rendered in", htmlPath);
     }
   );
 }
@@ -115,7 +115,7 @@ function cssCompiler() {
         const cssPath = getDestPath(cssName);
         appConfig.css_path = cssName;
         fs.writeFileSync(cssPath, cssStr);
-        taskLog("cssCompiler", "css file in", cssPath);
+        taskLog("cssCompiler", "css was compiled in", cssPath);
       }
     });
   });
@@ -126,7 +126,11 @@ function cssCompiler() {
  */
 function jsComplier() {
   appConfig.js_path = "app.js";
-  taskLog("jsComplier", "pass");
+  taskLog(
+    "jsComplier",
+    "js was compiled in",
+    path.resolve(appConfig.dest, appConfig.js_path)
+  );
 }
 
 /**
@@ -134,6 +138,7 @@ function jsComplier() {
  */
 function clearDist() {
   del.sync(appConfig.dest);
+  taskLog("clearDist", appConfig.dest, "dir was clean.");
 }
 
 /**
@@ -150,6 +155,7 @@ function assetsClone() {
     fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
   });
   appConfig.assets_path = appConfig.BASE_URL + dirName + "/";
+  taskLog("assetsClone", "assets was cloned in", copyDest);
 }
 
 /**
