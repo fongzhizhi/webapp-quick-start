@@ -4,8 +4,11 @@ const path = require("path");
 const ejs = require("ejs");
 const less = require("less");
 const del = require("del");
-const express = require("express");
 const chokidar = require("chokidar");
+const { rollup } = require("rollup");
+const rollupConfig = require("./rollup.config.js");
+const cp = require("child_process");
+const express = require("express");
 
 /**
  * 全局配置
@@ -13,7 +16,7 @@ const chokidar = require("chokidar");
 const appConfig = {
   BASE_URL: "",
   dest: "dist",
-  page_title: "",
+  page_title: "webapp-quick-start",
   css_path: "",
   js_path: "",
   assets_path: "",
@@ -55,7 +58,10 @@ function readDir(dir, accept, deep, ignore) {
       const state = fs.statSync(filePath);
       if (state.isDirectory()) {
         deep && files.push(...readDir(filePath, accept, deep));
-      } else if ((!accept || filePath.endsWith(accept)) && (!ignore || !filePath.endsWith(ignore))) {
+      } else if (
+        (!accept || filePath.endsWith(accept)) &&
+        (!ignore || !filePath.endsWith(ignore))
+      ) {
         files.push({
           path: filePath,
           relativePath: path.join(dir, p),
@@ -89,18 +95,14 @@ function taskLog(title, ...msgs) {
  */
 function htmlTempRender(watch) {
   const fileName = path.resolve(__dirname, "public/index.html");
-  ejs.renderFile(
-    fileName,
-    appConfig,
-    (err, str) => {
-      if (err) throw err;
-      const htmlPath = getDestPath("index.html");
-      fs.writeFileSync(htmlPath, str);
-      taskLog("htmlTempRender", "html template was rendered in", htmlPath);
-    }
-  );
-  if(watch) {
-    chokidar.watch(fileName).on('change', (status, path) => {
+  ejs.renderFile(fileName, appConfig, (err, str) => {
+    if (err) throw err;
+    const htmlPath = getDestPath("index.html");
+    fs.writeFileSync(htmlPath, str);
+    taskLog("htmlTempRender", "html template was rendered in", htmlPath);
+  });
+  if (watch) {
+    chokidar.watch(fileName).on("change", (status, path) => {
       htmlTempRender(false);
     });
   }
@@ -129,7 +131,7 @@ function cssCompiler(watch) {
       }
     });
   });
-  if(watch) {
+  if (watch) {
     chokidar.watch("src/styles/**/*.less").on("all", (status, path) => {
       cssCompiler(false);
     });
@@ -139,8 +141,10 @@ function cssCompiler(watch) {
 /**
  * js编译
  */
-function jsComplier() {
-  appConfig.js_path = "app.js";
+async function jsComplier() {
+  const build = await rollup(rollupConfig);
+  await build.write(rollupConfig.output);
+  appConfig.js_path = "app.min.js";
   taskLog(
     "jsComplier",
     "js was compiled in",
@@ -166,7 +170,7 @@ function assetsClone() {
   readDir(path.resolve("src", dirName), "", false).forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
   });
-  readDir("public", "", false, '.html').forEach((item) => {
+  readDir("public", "", false, ".html").forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
   });
   appConfig.assets_path = appConfig.BASE_URL + dirName + "/";
@@ -184,15 +188,25 @@ function server() {
     res.sendFile(path.resolve(appConfig.dest, "index.html"));
   });
   app.listen(port, () => {
-    taskLog("server", `App listening at http://localhost:${port}`);
+    const url = `http://localhost:${port}`;
+    taskLog("server", `App listening at ${url}`);
+    cp.exec("start " + url);
   });
 }
 
+/**
+ * 执行任务
+ * @param {Function[]} taskList
+ */
+async function runTasks(taskList) {
+  clearDist();
+  appInit();
+  assetsClone();
+  cssCompiler(true);
+  await jsComplier();
+  htmlTempRender(true);
+  server();
+}
+
 // ===> app run
-clearDist();
-appInit();
-assetsClone();
-cssCompiler(true);
-jsComplier();
-htmlTempRender(true);
-server();
+runTasks();

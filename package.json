@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "app": "node app.config.js",
     "babel": "./node_modules/.bin/babel src -d dist",
     "bind": "./node_modules/.bin/rollup -c rollup.config.js --watch",
-    "prettier": "prettier --write src/**/*.js --write app.config.js",
-    "dev": "run-p app bind"
+    "prettier": "prettier --write src/**/*.js --write *.js",
+    "dev": "node app.config.js"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +23,12 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "less": "^4.1.2",
+    "marked": "^4.0.5",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.5.0",
-    "rollup": "^2.60.1"
+    "rollup": "^2.60.1",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-uglify": "^6.0.4"
   }
 }
