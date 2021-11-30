@@ -1,6 +1,6 @@
 # webapp-quick-satrt
 
-> web-app快速启用。
+> 快速启用一个相对完整的webapp，切换不同分支选择不同的开发环境。
 
 ## 分支概要
 
@@ -20,3 +20,12 @@
 
   万物皆可模块。
 
+## 工作流
+
+### master
+
+### ts
+
+### gulp
+
+### webpack
