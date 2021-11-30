@@ -14,13 +14,14 @@ module.exports = {
   },
   // 插件
   plugins: [
+    // 让rollup支持第三方库的引用
     resolve(),
     commonjs(),
     babel({
       exclude: "node_modules/**",
       presets: ["@babel/preset-env"],
     }),
-    uglify(),
+    // uglify(),
   ],
   // 外链
   external: [],
@@ -30,6 +31,6 @@ module.exports = {
   },
   sourcemap: true,
   watch: {
-    include: "src/**",
+    include: "src/**/*.js",
   },
 };

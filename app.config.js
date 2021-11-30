@@ -141,7 +141,7 @@ function cssCompiler(watch) {
 /**
  * js编译
  */
-async function jsComplier() {
+async function jsComplier(watch) {
   const build = await rollup(rollupConfig);
   await build.write(rollupConfig.output);
   appConfig.js_path = "app.min.js";
@@ -150,6 +150,11 @@ async function jsComplier() {
     "js was compiled in",
     path.resolve(appConfig.dest, appConfig.js_path)
   );
+  if (watch) {
+    chokidar.watch(rollupConfig.watch.include).on("all", (status, path) => {
+      jsComplier(false);
+    });
+  }
 }
 
 /**
@@ -187,6 +192,9 @@ function server() {
   app.get("/", (req, res) => {
     res.sendFile(path.resolve(appConfig.dest, "index.html"));
   });
+  app.get("/readme", (req, res) => {
+    res.send(fs.readFileSync(path.resolve(__dirname, "README.md")).toString());
+  });
   app.listen(port, () => {
     const url = `http://localhost:${port}`;
     taskLog("server", `App listening at ${url}`);
@@ -203,7 +211,7 @@ async function runTasks(taskList) {
   appInit();
   assetsClone();
   cssCompiler(true);
-  await jsComplier();
+  await jsComplier(true);
   htmlTempRender(true);
   server();
 }

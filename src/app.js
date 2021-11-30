@@ -1,5 +1,7 @@
 import { printStyleLog } from "./utils/util";
 import { marked } from "marked";
+// 这里引入'axios'的话无法在rollup中正常打包
+import axios from "axios/dist/axios";
 
 window.onload = () => {
   loadReadme();
@@ -7,10 +9,17 @@ window.onload = () => {
 };
 
 function loadReadme() {
-  const readMeHtml = marked(
-    "# Marked in the browser\n\nRendered by **marked**."
-  );
-  document.getElementById("readme").innerHTML = readMeHtml;
+  axios
+    .get("/readme")
+    .then((res) => {
+      if (res && res.data) {
+        const readMeHtml = marked(res.data);
+        document.getElementById("readme").innerHTML = readMeHtml;
+      }
+    })
+    .catch((err) => {
+      printStyleLog("Server Error", err);
+    });
 }
 
 function doSomething() {
@@ -19,7 +28,7 @@ function doSomething() {
     "Jinx",
     {
       name: "Jinx",
-      age: 17,
+      age: 21,
     },
     {
       color: "#41b883",
