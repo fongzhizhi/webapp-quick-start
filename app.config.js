@@ -1,3 +1,4 @@
+// @ts-nocheck
 // const babel = require('@babel/core');
 const fs = require("fs");
 const path = require("path");
@@ -209,11 +210,11 @@ function server() {
 async function runTasks(taskList) {
   clearDist();
   appInit();
-  assetsClone();
-  cssCompiler(true);
+  // assetsClone();
+  // cssCompiler(true);
   await jsComplier(true);
-  htmlTempRender(true);
-  server();
+  // htmlTempRender(true);
+  // server();
 }
 
 // ===> app run
