@@ -5,12 +5,13 @@ const ejs = require("ejs");
 const less = require("less");
 const del = require("del");
 const express = require("express");
+const chokidar = require("chokidar");
 
 /**
  * 全局配置
  */
 const appConfig = {
-  BASE_URL: "./",
+  BASE_URL: "",
   dest: "dist",
   page_title: "",
   css_path: "",
@@ -42,9 +43,10 @@ function createDir(dir) {
  * @param {string} dir 路径
  * @param {string?} accept 接受的文件类型
  * @param {boolean?} deep 深度遍历
+ * @param {string?} ignore 忽略的文件类型
  * @returns {{relativePath: string;path: string;fileName: string;}[]}
  */
-function readDir(dir, accept, deep) {
+function readDir(dir, accept, deep, ignore) {
   const files = [];
   const res = fs.readdirSync(dir);
   res &&
@@ -53,7 +55,7 @@ function readDir(dir, accept, deep) {
       const state = fs.statSync(filePath);
       if (state.isDirectory()) {
         deep && files.push(...readDir(filePath, accept, deep));
-      } else if (!accept || filePath.endsWith(accept)) {
+      } else if ((!accept || filePath.endsWith(accept)) && (!ignore || !filePath.endsWith(ignore))) {
         files.push({
           path: filePath,
           relativePath: path.join(dir, p),
@@ -83,10 +85,12 @@ function taskLog(title, ...msgs) {
 
 /**
  * html渲染
+ * @param {boolean?} watch 是否监听文件变化并自动编译
  */
-function htmlTempRender() {
+function htmlTempRender(watch) {
+  const fileName = path.resolve(__dirname, "public/index.html");
   ejs.renderFile(
-    path.resolve(__dirname, "public/index.html"),
+    fileName,
     appConfig,
     (err, str) => {
       if (err) throw err;
@@ -95,12 +99,18 @@ function htmlTempRender() {
       taskLog("htmlTempRender", "html template was rendered in", htmlPath);
     }
   );
+  if(watch) {
+    chokidar.watch(fileName).on('change', (status, path) => {
+      htmlTempRender(false);
+    });
+  }
 }
 
 /**
  * css编译
+ * @param {boolean?} watch 是否观测文件变化并重新编译
  */
-function cssCompiler() {
+function cssCompiler(watch) {
   let index = 0;
   readDir("src/styles", ".less", false).forEach((item) => {
     index++;
@@ -119,6 +129,11 @@ function cssCompiler() {
       }
     });
   });
+  if(watch) {
+    chokidar.watch("src/styles/**/*.less").on("all", (status, path) => {
+      cssCompiler(false);
+    });
+  }
 }
 
 /**
@@ -151,7 +166,7 @@ function assetsClone() {
   readDir(path.resolve("src", dirName), "", false).forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
   });
-  readDir("public", ".ico", false).forEach((item) => {
+  readDir("public", "", false, '.html').forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(appConfig.dest, item.fileName));
   });
   appConfig.assets_path = appConfig.BASE_URL + dirName + "/";
@@ -177,7 +192,7 @@ function server() {
 clearDist();
 appInit();
 assetsClone();
-cssCompiler();
+cssCompiler(true);
 jsComplier();
-htmlTempRender();
+htmlTempRender(true);
 server();
