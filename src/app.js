@@ -1,7 +1,8 @@
 import { printStyleLog } from "./utils/util";
-import { marked } from "marked";
-// 这里引入'axios'的话无法在rollup中正常打包
+// [error-warn: 使用es6的import导入会导致打包异常，所以建议第三方库都使用require]
 import axios from "axios/dist/axios";
+// const axios = require("axios");
+import { marked } from 'marked';
 
 window.onload = () => {
   loadReadme();

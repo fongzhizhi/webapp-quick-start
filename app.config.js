@@ -9,6 +9,7 @@ const { rollup } = require("rollup");
 const rollupConfig = require("./rollup.config.js");
 const cp = require("child_process");
 const express = require("express");
+const { uglify } = require("rollup-plugin-uglify");
 
 /**
  * 全局配置
@@ -21,12 +22,20 @@ const appConfig = {
   js_path: "",
   assets_path: "",
 };
+const isProd = process.argv.includes('production'); // 生成环境
 
 /**
  * 一些初始化工作
  */
 function appInit() {
   createDir(path.resolve(__dirname, appConfig.dest));
+  if(isProd) {
+    rollupConfig.plugins.push(uglify());
+    const fileName = rollupConfig.output.file;
+    if(/(.+)\.js$/.test(fileName)) {
+      rollupConfig.output.file = RegExp.$1 + '.min.js';
+    }
+  }
 }
 
 /**
@@ -144,14 +153,14 @@ function cssCompiler(watch) {
 async function jsComplier(watch) {
   const build = await rollup(rollupConfig);
   await build.write(rollupConfig.output);
-  appConfig.js_path = "app.min.js";
+  appConfig.js_path = rollupConfig.output.file.replace(new RegExp(`\.*${appConfig.dest}\/`), '');
   taskLog(
     "jsComplier",
     "js was compiled in",
     path.resolve(appConfig.dest, appConfig.js_path)
   );
   if (watch) {
-    chokidar.watch(rollupConfig.watch.include).on("all", (status, path) => {
+    chokidar.watch(rollupConfig.watch.include).on("change", (status, path) => {
       jsComplier(false);
     });
   }

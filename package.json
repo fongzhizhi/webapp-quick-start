@@ -9,7 +9,7 @@
     "bind": "./node_modules/.bin/rollup -c rollup.config.js --watch",
     "prettier": "prettier --write src/** --write *.js",
     "dev": "node app.config.js",
-    "prod": "node app.config.js --prod"
+    "prod": "node app.config.js production"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +19,8 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.4",
     "@rollup/plugin-babel": "^5.3.0",
-    "axios": "^0.24.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "axios": "^0.21.4",
     "chokidar": "^3.5.2",
     "del": "^6.0.0",
     "ejs": "^3.1.6",
