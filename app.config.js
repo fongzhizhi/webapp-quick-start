@@ -22,18 +22,18 @@ const appConfig = {
   js_path: "",
   assets_path: "",
 };
-const isProd = process.argv.includes('production'); // 生成环境
+const isProd = process.argv.includes("production"); // 生成环境
 
 /**
  * 一些初始化工作
  */
 function appInit() {
   createDir(path.resolve(__dirname, appConfig.dest));
-  if(isProd) {
+  if (isProd) {
     rollupConfig.plugins.push(uglify());
     const fileName = rollupConfig.output.file;
-    if(/(.+)\.js$/.test(fileName)) {
-      rollupConfig.output.file = RegExp.$1 + '.min.js';
+    if (/(.+)\.js$/.test(fileName)) {
+      rollupConfig.output.file = RegExp.$1 + ".min.js";
     }
   }
 }
@@ -153,7 +153,10 @@ function cssCompiler(watch) {
 async function jsComplier(watch) {
   const build = await rollup(rollupConfig);
   await build.write(rollupConfig.output);
-  appConfig.js_path = rollupConfig.output.file.replace(new RegExp(`\.*${appConfig.dest}\/`), '');
+  appConfig.js_path = rollupConfig.output.file.replace(
+    new RegExp(`\.*${appConfig.dest}\/`),
+    ""
+  );
   taskLog(
     "jsComplier",
     "js was compiled in",

@@ -18,7 +18,7 @@ module.exports = {
     resolve(),
     commonjs(),
     babel({
-      babelHelpers: 'bundled',
+      babelHelpers: "bundled",
       exclude: "node_modules/**",
       presets: ["@babel/preset-env"],
     }),
