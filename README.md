@@ -4,28 +4,26 @@
 
 ## 分支概要
 
-+ `master`
+### [base](https://github.com/fongzhizhi/webapp-quick-start)
 
-  主分支。未使用自动化构建工具，带你感受到“刀耕火种”的乐趣。
+主分支。未使用自动化构建工具，带你感受到“刀耕火种”的乐趣。
 
-+ `ts`
+### [base-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-ts)
 
-  前端主流开发语言`typescript`，给你流畅的开发体验。
+前端主流开发语言`typescript`，给你流畅的开发体验。
 
-+ `gulp`
+### [base-gulp](https://github.com/fongzhizhi/webapp-quick-start/tree/base-gulp)
 
-  不是懒，只是更专注。
+不是懒，只是更专注。
 
-+ `webpack`
+### [base-gulp-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-gulp-ts)
 
-  万物皆可模块。
+gulp-ts
 
-## 工作流
+### [base-webpack](https://github.com/fongzhizhi/webapp-quick-start/tree/base-webpack)
 
-### master
+万物皆可模块。
 
-### ts
+### [base-webpack-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-webpack-ts)
 
-### gulp
-
-### webpack
+webpack-ts
