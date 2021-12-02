@@ -8,14 +8,16 @@ module.exports = {
   input: "src/app.js",
   // 输出配置
   output: {
-    file: "dist/app.js",
+    file: "dist/app.bundle.js",
     format: "cjs",
     name: "webapp-quick-start",
   },
   // 插件
   plugins: [
     // 让rollup支持第三方库的引用
-    resolve(),
+    resolve({
+      browser: true,
+    }),
     commonjs(),
     babel({
       babelHelpers: "bundled",

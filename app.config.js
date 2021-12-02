@@ -32,7 +32,9 @@ function appInit() {
   if (isProd) {
     rollupConfig.plugins.push(uglify());
     const fileName = rollupConfig.output.file;
-    if (/(.+)\.js$/.test(fileName)) {
+    if (/\.(bundle)\./.test(fileName)) {
+      fileName.replace(RegExp.$1, "min");
+    } else if (/(.+)\.js$/.test(fileName)) {
       rollupConfig.output.file = RegExp.$1 + ".min.js";
     }
   }
