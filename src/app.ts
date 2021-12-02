@@ -1,6 +1,6 @@
 import { printStyleLog } from "./utils/util";
 import axios from "axios";
-import marked from "marked";
+import { marked } from "marked";
 
 window.onload = () => {
   loadReadme();
@@ -12,7 +12,7 @@ function loadReadme() {
     .get("/readme")
     .then((res) => {
       if (res && res.data) {
-        const readMeHtml = marked.marked(res.data);
+        const readMeHtml = marked(res.data);
         document.getElementById("readme").innerHTML = readMeHtml;
       }
     })

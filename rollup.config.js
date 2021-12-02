@@ -1,11 +1,12 @@
 const { babel } = require("@rollup/plugin-babel");
 const resolve = require("rollup-plugin-node-resolve");
-const commonjs = require("rollup-plugin-commonjs");
+const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
+const typescript = require("rollup-plugin-typescript2");
 
 module.exports = {
   // 打包入口
-  input: "src/app.js",
+  input: "src/app.ts",
   // 输出配置
   output: {
     file: "dist/app.bundle.js",
@@ -19,6 +20,9 @@ module.exports = {
       browser: true,
     }),
     commonjs(),
+    typescript({
+      tsconfig: "tsconfig.json",
+    }),
     babel({
       babelHelpers: "bundled",
       exclude: "node_modules/**",
