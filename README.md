@@ -1,4 +1,4 @@
-# webapp-quick-satrt
+# webapp-quick-start
 
 > 快速启用一个相对完整的webapp，切换不同分支以选择不同的开发环境。
 
@@ -12,18 +12,50 @@
 
 前端主流开发语言`typescript`，给你流畅的开发体验。
 
-### [base-gulp](https://github.com/fongzhizhi/webapp-quick-start/tree/base-gulp)
+### [gulp](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp)
 
 不是懒，只是更专注。
 
-### [base-gulp-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-gulp-ts)
+### [gulp-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp-ts)
 
-gulp-ts
+`gulp`搭配`typescript`食用更佳喔。
 
-### [base-webpack](https://github.com/fongzhizhi/webapp-quick-start/tree/base-webpack)
+### [webpack](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack)
 
 万物皆可模块。
 
-### [base-webpack-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-webpack-ts)
+### [webpack-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack-ts)
 
-webpack-ts
+`webpack`加菜`typescript`。
+
+### [vite](https://github.com/fongzhizhi/webapp-quick-start/tree/vite)
+
+号称下一代构建工具的`vite`
+
+### [esbuild](https://github.com/fongzhizhi/webapp-quick-start/tree/esbuild)
+
+快到没朋友
+
+
+## 构建细节
+
+
+
+## 快速启用
+
+拉取项目，切换到所需要的分支。
+
+安装项目所需依赖：
+
+```shell
+npm insatll
+```
+
+启动项目：
+
+```shell
+npm run dev
+```
+
+
+
