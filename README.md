@@ -1,6 +1,8 @@
 # webapp-quick-start
 
-> 快速启用一个相对完整的webapp，切换不同分支以选择不同的开发环境。
+> 切换分支，选择你的喜欢的构建工具流，快速启用你的前端应用。
+
+![logo](.\src\assets\logo.png)
 
 ## 分支概要
 
@@ -18,9 +20,9 @@ ts版本的项目资源包。
 
 ### [base-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-ts)
 
-> [typescript](https://www.tslang.cn/)用了停不了。
+> [typescript](https://www.tslang.cn/) 用了停不了。
 
-引入前端主流开发语言[typescript](https://www.tslang.cn/)，给你流畅的开发体验。
+引入前端主流开发语言 **`typescript`**，给你流畅的开发体验。
 
 ### [gulp](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp)
 
@@ -30,13 +32,13 @@ ts版本的项目资源包。
 
 ### [gulp-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp-ts)
 
-[gulp](https://www.gulpjs.com.cn/)搭配[typescript](https://www.tslang.cn/)食用更佳喔。
+[gulp](https://www.gulpjs.com.cn/) 搭配 [typescript](https://www.tslang.cn/) 食用更佳喔。
 
 ### [parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel)
 
 > 听说是极速零配置Web应用打包工具
 
-基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入[parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel)打包工具，快速构建零配置的Web App。
+基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入打包工具  [parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel) ，快速构建零配置的Web App。
 
 ### [vite](https://github.com/fongzhizhi/webapp-quick-start/tree/vite)
 
@@ -52,7 +54,7 @@ ts版本的项目资源包。
 
 ### [webpack-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack-ts)
 
-无[typescript](https://www.tslang.cn/)不欢。
+无 [typescript](https://www.tslang.cn/) 不欢。
 
 
 ## 快速启用
