@@ -2,7 +2,7 @@
 
 > 快速启用一个相对完整的webapp，切换不同分支以选择不同的开发环境。
 
-## 分支（[base-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-ts)）详情
+## [base-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-ts) 构建细节
 
 > 本分支基于[base](https://github.com/fongzhizhi/webapp-quick-start/tree/base)分支，引入`typescript`作为本地开发语言。
 
