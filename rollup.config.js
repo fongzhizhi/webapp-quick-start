@@ -33,6 +33,6 @@ module.exports = {
   // 外链
   external: [],
   watch: {
-    include: "src/**/*.js",
+    include: "src/**/*.ts",
   },
 };
