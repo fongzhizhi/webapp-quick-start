@@ -5,11 +5,10 @@ const ejs = require("ejs");
 const less = require("less");
 const del = require("del");
 const chokidar = require("chokidar");
-const { rollup } = require("rollup");
-const rollupConfig = require("./rollup.config.js");
 const cp = require("child_process");
 const express = require("express");
-const { uglify } = require("rollup-plugin-uglify");
+const esbuild = require("esbuild");
+const babel = require('@babel/core');
 
 /**
  * 全局配置
@@ -29,15 +28,6 @@ const isProd = process.argv.includes("production"); // 生成环境
  */
 function appInit() {
   createDir(path.resolve(__dirname, appConfig.dest));
-  if (isProd) {
-    rollupConfig.plugins.push(uglify());
-    const fileName = rollupConfig.output.file;
-    if (/\.(bundle)\./.test(fileName)) {
-      fileName.replace(RegExp.$1, "min");
-    } else if (/(.+)\.js$/.test(fileName)) {
-      rollupConfig.output.file = RegExp.$1 + ".min.js";
-    }
-  }
 }
 
 /**
@@ -68,7 +58,7 @@ function readDir(dir, accept, deep, ignore) {
       const filePath = path.resolve(dir, p);
       const state = fs.statSync(filePath);
       if (state.isDirectory()) {
-        deep && files.push(...readDir(filePath, accept, deep));
+        deep && files.push(...readDir(filePath, accept, deep, ''));
       } else if (
         (!accept || filePath.endsWith(accept)) &&
         (!ignore || !filePath.endsWith(ignore))
@@ -125,7 +115,7 @@ function htmlTempRender(watch) {
  */
 function cssCompiler(watch) {
   let index = 0;
-  readDir("src/styles", ".less", false).forEach((item) => {
+  readDir("src/styles", ".less", false, '').forEach((item) => {
     index++;
     const content = fs.readFileSync(item.path).toString();
     let cssStr = "";
@@ -151,24 +141,46 @@ function cssCompiler(watch) {
 
 /**
  * js编译
+ * @param {boolean?} watch 是否监听文件变化并自动编译
  */
-async function jsComplier(watch) {
-  const build = await rollup(rollupConfig);
-  await build.write(rollupConfig.output);
-  appConfig.js_path = rollupConfig.output.file.replace(
-    new RegExp(`\.*${appConfig.dest}\/`),
-    ""
-  );
+function jsComplier(watch) {
+  const bundleFile = isProd ? 'app.min.js' : 'app.js';
+  appConfig.js_path = bundleFile;
+  const outfile = path.resolve(appConfig.dest, appConfig.js_path);
+  
+  // 自制插件
+  const esbuildPluginBabel = {
+    name: 'esbuild-plugin-babel',
+    setup(build) {
+      build.onLoad({
+        filter: /\.js$/,
+      }, (res) => {
+        const contents = fs.readFileSync(res.path).toString();
+        babel.parse(contents, {
+          configFile: 'babel.config.js'
+        });
+        return {
+          contents
+        }
+      })
+    },
+  };
+
+  esbuild.build({
+    entryPoints: [path.resolve('src', 'app.js')],
+    outfile,
+    bundle: true,
+    format: 'cjs',
+    minify: isProd,
+    sourcemap: !isProd,
+    watch,
+    plugins: [esbuildPluginBabel],
+  });
   taskLog(
     "jsComplier",
     "js was compiled in",
-    path.resolve(appConfig.dest, appConfig.js_path)
+    outfile
   );
-  if (watch) {
-    chokidar.watch(rollupConfig.watch.include).on("change", (status, path) => {
-      jsComplier(false);
-    });
-  }
 }
 
 /**
@@ -186,7 +198,7 @@ function assetsClone() {
   const dirName = "assets";
   const copyDest = path.resolve(appConfig.dest, dirName);
   createDir(copyDest);
-  readDir(path.resolve("src", dirName), "", false).forEach((item) => {
+  readDir(path.resolve("src", dirName), "", false, '').forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
   });
   readDir("public", "", false, ".html").forEach((item) => {
@@ -218,17 +230,22 @@ function server() {
 
 /**
  * 执行任务
- * @param {Function[]} taskList
  */
-async function runTasks(taskList) {
+function runTasks() {
   clearDist();
   appInit();
-  assetsClone();
-  cssCompiler(true);
-  await jsComplier(true);
-  htmlTempRender(true);
-  server();
+  // assetsClone();
+  // cssCompiler(true);
+  jsComplier(false);
+  // htmlTempRender(true);
+  // server();
 }
 
 // ===> app run
-runTasks();
+// runTasks();
+
+const contents = fs.readFileSync(path.resolve('src', 'app.js')).toString();
+const res = babel.parse(contents, {
+  configFile: path.resolve('babel.config.js')
+});
+console.log(res)

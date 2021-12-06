@@ -4,4 +4,4 @@
 
 ## 分支构建细节
 
-待补充...
+> 该分支基于 [base](https://github.com/fongzhizhi/webapp-quick-start/tree/base) 分支，将js打包器[rollup](https://www.rollupjs.com/)替换为[esbuild](https://esbuild.docschina.org/)打包器。

@@ -1,6 +1,7 @@
 import { printStyleLog } from "./utils/util";
 import axios from "axios";
-import marked from "marked";
+// import marked from "marked";
+const marked = null
 
 window.onload = () => {
   loadReadme();
@@ -17,7 +18,7 @@ function loadReadme() {
       }
     })
     .catch((err) => {
-      printStyleLog("Server Error", err);
+      printStyleLog("Server Error", err, null);
     });
 }
 
