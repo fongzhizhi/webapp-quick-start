@@ -68,7 +68,7 @@ function readDir(dir, accept, deep, ignore) {
       const filePath = path.resolve(dir, p);
       const state = fs.statSync(filePath);
       if (state.isDirectory()) {
-        deep && files.push(...readDir(filePath, accept, deep));
+        deep && files.push(...readDir(filePath, accept, deep, ''));
       } else if (
         (!accept || filePath.endsWith(accept)) &&
         (!ignore || !filePath.endsWith(ignore))
@@ -125,7 +125,7 @@ function htmlTempRender(watch) {
  */
 function cssCompiler(watch) {
   let index = 0;
-  readDir("src/styles", ".less", false).forEach((item) => {
+  readDir("src/styles", ".less", false, '').forEach((item) => {
     index++;
     const content = fs.readFileSync(item.path).toString();
     let cssStr = "";
@@ -186,7 +186,7 @@ function assetsClone() {
   const dirName = "assets";
   const copyDest = path.resolve(appConfig.dest, dirName);
   createDir(copyDest);
-  readDir(path.resolve("src", dirName), "", false).forEach((item) => {
+  readDir(path.resolve("src", dirName), "", false, '').forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
   });
   readDir("public", "", false, ".html").forEach((item) => {
@@ -218,9 +218,8 @@ function server() {
 
 /**
  * 执行任务
- * @param {Function[]} taskList
  */
-async function runTasks(taskList) {
+async function runTasks() {
   clearDist();
   appInit();
   assetsClone();
