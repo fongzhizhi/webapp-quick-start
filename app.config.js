@@ -143,7 +143,7 @@ function cssCompiler(watch) {
  * js编译
  * @param {boolean?} watch 是否监听文件变化并自动编译
  */
-function jsComplier(watch) {
+async function jsComplier(watch) {
   const bundleFile = isProd ? 'app.min.js' : 'app.js';
   appConfig.js_path = bundleFile;
   const outfile = path.resolve(appConfig.dest, appConfig.js_path);
@@ -156,17 +156,17 @@ function jsComplier(watch) {
         filter: /\.js$/,
       }, (res) => {
         const contents = fs.readFileSync(res.path).toString();
-        babel.parse(contents, {
-          configFile: 'babel.config.js'
+        const babelRes = babel.transform(contents, {
+          configFile: path.resolve('babel.config.js')
         });
         return {
-          contents
+          contents: babelRes.code
         }
       })
     },
   };
 
-  esbuild.build({
+  await esbuild.build({
     entryPoints: [path.resolve('src', 'app.js')],
     outfile,
     bundle: true,
@@ -231,21 +231,15 @@ function server() {
 /**
  * 执行任务
  */
-function runTasks() {
+async function runTasks() {
   clearDist();
   appInit();
-  // assetsClone();
-  // cssCompiler(true);
-  jsComplier(false);
-  // htmlTempRender(true);
-  // server();
+  assetsClone();
+  cssCompiler(true);
+  await jsComplier(true);
+  htmlTempRender(true);
+  server();
 }
 
 // ===> app run
-// runTasks();
-
-const contents = fs.readFileSync(path.resolve('src', 'app.js')).toString();
-const res = babel.parse(contents, {
-  configFile: path.resolve('babel.config.js')
-});
-console.log(res)
+runTasks();
