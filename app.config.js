@@ -8,7 +8,7 @@ const chokidar = require("chokidar");
 const cp = require("child_process");
 const express = require("express");
 const esbuild = require("esbuild");
-const babel = require('@babel/core');
+const babel = require("@babel/core");
 
 /**
  * 全局配置
@@ -58,7 +58,7 @@ function readDir(dir, accept, deep, ignore) {
       const filePath = path.resolve(dir, p);
       const state = fs.statSync(filePath);
       if (state.isDirectory()) {
-        deep && files.push(...readDir(filePath, accept, deep, ''));
+        deep && files.push(...readDir(filePath, accept, deep, ""));
       } else if (
         (!accept || filePath.endsWith(accept)) &&
         (!ignore || !filePath.endsWith(ignore))
@@ -115,7 +115,7 @@ function htmlTempRender(watch) {
  */
 function cssCompiler(watch) {
   let index = 0;
-  readDir("src/styles", ".less", false, '').forEach((item) => {
+  readDir("src/styles", ".less", false, "").forEach((item) => {
     index++;
     const content = fs.readFileSync(item.path).toString();
     let cssStr = "";
@@ -144,43 +144,42 @@ function cssCompiler(watch) {
  * @param {boolean?} watch 是否监听文件变化并自动编译
  */
 async function jsComplier(watch) {
-  const bundleFile = isProd ? 'app.min.js' : 'app.js';
+  const bundleFile = isProd ? "app.min.js" : "app.js";
   appConfig.js_path = bundleFile;
   const outfile = path.resolve(appConfig.dest, appConfig.js_path);
-  
+
   // 自制插件
   const esbuildPluginBabel = {
-    name: 'esbuild-plugin-babel',
+    name: "esbuild-plugin-babel",
     setup(build) {
-      build.onLoad({
-        filter: /\.js$/,
-      }, (res) => {
-        const contents = fs.readFileSync(res.path).toString();
-        const babelRes = babel.transform(contents, {
-          configFile: path.resolve('babel.config.js')
-        });
-        return {
-          contents: babelRes.code
+      build.onLoad(
+        {
+          filter: /\.js$/,
+        },
+        (res) => {
+          const contents = fs.readFileSync(res.path).toString();
+          const babelRes = babel.transform(contents, {
+            configFile: path.resolve("babel.config.js"),
+          });
+          return {
+            contents: babelRes.code,
+          };
         }
-      })
+      );
     },
   };
 
   await esbuild.build({
-    entryPoints: [path.resolve('src', 'app.js')],
+    entryPoints: [path.resolve("src", "app.js")],
     outfile,
     bundle: true,
-    format: 'cjs',
+    format: "cjs",
     minify: isProd,
     sourcemap: !isProd,
     watch,
     plugins: [esbuildPluginBabel],
   });
-  taskLog(
-    "jsComplier",
-    "js was compiled in",
-    outfile
-  );
+  taskLog("jsComplier", "js was compiled in", outfile);
 }
 
 /**
@@ -198,7 +197,7 @@ function assetsClone() {
   const dirName = "assets";
   const copyDest = path.resolve(appConfig.dest, dirName);
   createDir(copyDest);
-  readDir(path.resolve("src", dirName), "", false, '').forEach((item) => {
+  readDir(path.resolve("src", dirName), "", false, "").forEach((item) => {
     fs.copyFileSync(item.path, path.resolve(copyDest, item.fileName));
   });
   readDir("public", "", false, ".html").forEach((item) => {
