@@ -4,7 +4,8 @@
   "description": "快速启用一个相对完整的webapp，切换不同分支以选择不同的开发环境。",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write src/**/*.ts --write *.ts"
   },
   "repository": {
     "type": "git",
