@@ -1,14 +1,14 @@
-const path = require('path')
+const path = require("path");
 const { series, parallel, src, dest } = require("gulp");
 const less = require("gulp-less");
 const cssnano = require("gulp-cssnano");
 const cssConcat = require("gulp-concat-css");
 const rename = require("gulp-rename");
-const clean = require('gulp-clean');
-const minify = require('gulp-minify');
-const rollup = require('gulp-better-rollup');
-const {babel} = require('@rollup/plugin-babel');
-const sourcemaps = require('gulp-sourcemaps');
+const clean = require("gulp-clean");
+const minify = require("gulp-minify");
+const rollup = require("gulp-better-rollup");
+const { babel } = require("@rollup/plugin-babel");
+const sourcemaps = require("gulp-sourcemaps");
 const resolve = require("rollup-plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
@@ -35,18 +35,17 @@ const isProd = process.argv.includes("production");
 
 /**
  * 目标输出路径
- * @param {string} relativePath 
+ * @param {string} relativePath
  */
 function destPath(relativePath) {
-  return path.resolve(appConfig.dest, relativePath)
+  return path.resolve(appConfig.dest, relativePath);
 }
 
 /**
  * 清除缓存目录
-  */
+ */
 function cleanDist() {
-  return src(appConfig.dest, {read: false})
-        .pipe(clean());
+  return src(appConfig.dest, { read: false }).pipe(clean());
 }
 
 /**
@@ -61,12 +60,12 @@ function styleCompiler() {
   // 压缩
   isProd && plugins.push(cssnano());
   // 重命名
-  isProd && plugins.push(rename({suffix: '.min'}))
+  isProd && plugins.push(rename({ suffix: ".min" }));
   // 输出
   plugins.push(dest(appConfig.dest));
-  
+
   let stream = src("src/styles/**/*.less");
-  plugins.forEach(f => stream = stream.pipe(f));
+  plugins.forEach((f) => (stream = stream.pipe(f)));
   return stream;
 }
 
@@ -101,12 +100,12 @@ function scriptCompiler() {
   // 压缩
   isProd && plugins.push(minify());
   // 重命名
-  isProd && plugins.push(rename({suffix: '.min'}))
+  isProd && plugins.push(rename({ suffix: ".min" }));
   // 输出
   plugins.push(dest(appConfig.dest));
-  
+
   let stream = src("src/app.js");
-  plugins.forEach(f => stream = stream.pipe(f));
+  plugins.forEach((f) => (stream = stream.pipe(f)));
   return stream;
 }
 
