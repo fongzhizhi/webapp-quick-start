@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "babel": "./node_modules/.bin/babel src -d dist",
-    "prettier": "prettier --write src/** --write *.js",
+    "prettier": "prettier --write src/**/*.js --write *.js",
     "dev": "node app.config.js",
     "prod": "node app.config.js production"
   },
