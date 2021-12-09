@@ -2,73 +2,45 @@
 
 > 切换分支，选择你的喜欢的构建工具流，快速启用你的前端应用。
 
-![logo](src/assets/logo.png)
+## 分支构建细节
 
-## 分支概要
+本分支基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，借助自动化构建工具[gulp](https://www.gulpjs.com.cn/)来**更优雅地**完成[base](https://github.com/fongzhizhi/webapp-quick-start/tree/base)分支那些编译任务。
 
-### [main](https://github.com/fongzhizhi/webapp-quick-start/main)
+### 准备工作
 
-仓库主分支，项目资源包。
+我们需要完成的编译效果和[base](https://github.com/fongzhizhi/webapp-quick-start/tree/base)分支一致，不同在于[base](https://github.com/fongzhizhi/webapp-quick-start/tree/base)分支是通过`app.config.js`文件来实现项目的打包编译，这里这是改由`gulp`来实现。
 
-### [main-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/main-ts)
-
-ts版本的项目资源包。
-
-### [base](https://github.com/fongzhizhi/webapp-quick-start/tree/base)
-
-基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，不使用自动化构建工具，手写项目编译运行逻辑，带你感受到“刀耕火种”的乐趣。
-
-### [base-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/base-ts)
-
-> [typescript](https://www.tslang.cn/) 用了停不了。
-
-引入前端主流开发语言 **`typescript`**，给你流畅的开发体验。
-
-### [gulp](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp)
-
-> 不是懒，只是更专注。
-
-基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入自动化构建工具[gulp](https://www.gulpjs.com.cn/)，让你的工作流随意切换。
-
-### [gulp-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp-ts)
-
-[gulp](https://www.gulpjs.com.cn/) 搭配 [typescript](https://www.tslang.cn/) 食用更佳喔。
-
-### [parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel)
-
-> 听说是极速零配置Web应用打包工具
-
-基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入打包工具  [parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel) ，快速构建零配置的Web App。
-
-### [vite](https://github.com/fongzhizhi/webapp-quick-start/tree/vite)
-
-> 号称下一代前端开发和构建工具的[vite](https://cn.vitejs.dev/)。
-
-基于仓库[主分支(ts)](https://github.com/fongzhizhi/webapp-quick-start/tree/main-ts)，引入打包工具[vite](https://github.com/fongzhizhi/webapp-quick-start/tree/vite)，快速启用你的Web App。
-
-### [webpack](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack)
-
-> 万物皆可模块。
-
-基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入打包工具[webpack](https://www.webpackjs.com/)，构建模块化开发案例。
-
-### [webpack-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack-ts)
-
-无 [typescript](https://www.tslang.cn/) 不欢。
-
-
-## 快速启用
-
-拉取项目，切换到所需要的分支。
-
-安装项目所需依赖：
+安装`gulp`:
 
 ```shell
-npm insatll
+npm install gulp
 ```
 
-启动项目：
+创建配置文件：`gulpfile.js`。
 
-```shell
-npm run dev
-```
+`gulp`的工作原理是并列或序列地组合一个个的任务，而任务的实现基本都可以通过插件来实现。由于`gulp`使用文件流的格式进行数据传递，因此各种插件之间可以很好地搭配使用。
+
+我们将项目的编译打包任务划分为以下工作任务，逐一实现，然后再组合起来即可。
+
+### 样式编译
+
+
+
+### 脚本编译
+
+
+
+### 静态资源文件拷贝
+
+
+
+### 模板编译
+
+
+
+### 服务器
+
+
+
+### 文件清理
+
