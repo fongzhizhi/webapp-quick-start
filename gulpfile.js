@@ -1,5 +1,7 @@
 const path = require("path");
-const { series, parallel, src, dest } = require("gulp");
+const fs = require("fs");
+const cp = require("child_process");
+const { series, parallel, src, dest, watch } = require("gulp");
 const less = require("gulp-less");
 const cssnano = require("gulp-cssnano");
 const cssConcat = require("gulp-concat-css");
@@ -12,11 +14,28 @@ const sourcemaps = require("gulp-sourcemaps");
 const resolve = require("rollup-plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
+const ejs = require("gulp-ejs");
+const express = require("express");
 
 /**
  * 全局配置
  */
 const appConfig = {
+  // => config
+  /**生产环境 */
+  isProd: false,
+  /**文件监听 */
+  watch: true,
+
+  // => entry
+  html_paths: "public/*.html",
+  styles_paths: "src/styles/**/*.less",
+  scripts_paths: "src/**/*.js",
+  script_entry: "src/app.js",
+  assets_paths: "src/assets/**/*",
+  publicPaths: ["public/*", "!public/*.html"],
+
+  // => output
   /**基础路径 */
   BASE_URL: "",
   /**输出路径 */
@@ -28,10 +47,8 @@ const appConfig = {
   /**打包的js路径 */
   js_path: "app.js",
   /**静态资源路径 */
-  assets_path: "",
+  assets_path: "assets/",
 };
-/**是否为生产环境 */
-const isProd = process.argv.includes("production");
 
 /**
  * 目标输出路径
@@ -45,7 +62,7 @@ function destPath(relativePath) {
  * 清除缓存目录
  */
 function cleanDist() {
-  return src(appConfig.dest, { read: false }).pipe(clean());
+  return src(appConfig.dest, { read: false, allowEmpty: true }).pipe(clean());
 }
 
 /**
@@ -57,15 +74,19 @@ function styleCompiler() {
   plugins.push(less());
   // 合并
   plugins.push(cssConcat(destPath(appConfig.css_path)));
-  // 压缩
-  isProd && plugins.push(cssnano());
-  // 重命名
-  isProd && plugins.push(rename({ suffix: ".min" }));
+  if (appConfig.isProd) {
+    // 压缩
+    plugins.push(cssnano());
+    // 重命名
+    plugins.push(rename({ suffix: ".min" }));
+    appConfig.css_path = appConfig.css_path.replace(/$\.css/, ".min.css");
+  }
   // 输出
   plugins.push(dest(appConfig.dest));
 
-  let stream = src("src/styles/**/*.less");
+  let stream = src(appConfig.styles_paths);
   plugins.forEach((f) => (stream = stream.pipe(f)));
+
   return stream;
 }
 
@@ -75,38 +96,131 @@ function styleCompiler() {
 function scriptCompiler() {
   const plugins = [];
   // sourceMap
-  !isProd && plugins.push(sourcemaps.init());
+  !appConfig.isProd && plugins.push(sourcemaps.init());
   // 编译
-  // plugins.push(rollup({
-  //   output: {
-  //     file: dest(appConfig.js_path),
-  //     format: "cjs",
-  //     name: "webapp-quick-start",
-  //   },
-  //   plugins: [
-  //     // 让rollup支持第三方库的引用
-  //     resolve({
-  //       browser: true,
-  //     }),
-  //     commonjs(),
-  //     babel({
-  //       babelHelpers: "bundled",
-  //       exclude: "node_modules/**",
-  //       presets: ["@babel/preset-env"],
-  //     }),
-  //     json(),
-  //   ],
-  // }));
-  // 压缩
-  isProd && plugins.push(minify());
-  // 重命名
-  isProd && plugins.push(rename({ suffix: ".min" }));
+  plugins.push(
+    rollup(
+      {
+        plugins: [
+          // 让rollup支持第三方库的引用
+          resolve({
+            browser: true,
+          }),
+          commonjs(),
+          babel({
+            babelHelpers: "bundled",
+            exclude: "node_modules/**",
+            presets: ["@babel/preset-env"],
+          }),
+          json(),
+        ],
+      },
+      {
+        format: "cjs",
+      }
+    )
+  );
+  if (appConfig.isProd) {
+    // 压缩
+    plugins.push(minify());
+    // 重命名
+    plugins.push(rename({ suffix: ".min" }));
+    appConfig.js_path = appConfig.css_path.replace(/$\.js/, ".min.js");
+  }
   // 输出
   plugins.push(dest(appConfig.dest));
 
-  let stream = src("src/app.js");
+  let stream = src(appConfig.script_entry);
   plugins.forEach((f) => (stream = stream.pipe(f)));
   return stream;
 }
 
-exports.default = series(cleanDist, parallel(styleCompiler));
+/**
+ * 静态资源拷贝
+ */
+function assetsCopy() {
+  // assets
+  const copyDest = path.resolve(appConfig.dest, "assets");
+  src(appConfig.assets_paths).pipe(dest(copyDest));
+  // public
+  return src(appConfig.publicPaths).pipe(dest(appConfig.dest));
+}
+
+/**
+ * html模板编译
+ */
+function htmlCompiler() {
+  return src(appConfig.html_paths)
+    .pipe(ejs(appConfig))
+    .pipe(dest(appConfig.dest));
+}
+
+/**
+ * 服务器
+ */
+function server(cb) {
+  const app = express();
+  const port = 3000;
+  app.use(express.static(appConfig.dest));
+  app.get("/", (req, res) => {
+    res.sendFile(path.resolve(appConfig.dest, "index.html"));
+  });
+  app.get("/readme", (req, res) => {
+    res.send(fs.readFileSync(path.resolve(__dirname, "README.md")).toString());
+  });
+  app.listen(port, () => {
+    const url = `http://localhost:${port}`;
+    console.log("[server running]", `App listening at ${url}`);
+    cp.exec("start " + url);
+  });
+  cb();
+}
+
+/**
+ * 设置为生产环境
+ */
+function setProdEnv(cb) {
+  appConfig.isProd = true;
+  cb();
+}
+
+/**
+ * 构建任务监听
+ */
+function watchTask(cb) {
+  if (!appConfig.watch) {
+    return;
+  }
+  watch(appConfig.html_paths, htmlCompiler);
+  watch(appConfig.styles_paths, styleCompiler);
+  watch(appConfig.scripts_paths, scriptCompiler);
+  watch(appConfig.assets_paths, assetsCopy);
+  watch(appConfig.publicPaths, assetsCopy);
+  cb();
+}
+
+/**
+ * 构建
+ */
+exports.build = series(
+  cleanDist,
+  parallel(htmlCompiler, styleCompiler, scriptCompiler, assetsCopy, watchTask)
+);
+exports.buildProd = series(setProdEnv, exports.build);
+/**
+ * 启动服务
+ */
+exports.server = server;
+/**
+ * 本地|默认
+ */
+exports.default = exports.dev = series(exports.build, exports.server);
+/**
+ * 生产环境
+ */
+exports.prod = series(exports.buildProd, exports.server);
+
+/**
+ * 测试
+ */
+exports.test = parallel(styleCompiler);
