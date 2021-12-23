@@ -17,7 +17,7 @@ function loadReadme() {
       }
     })
     .catch((err) => {
-      printStyleLog("Server Error", err);
+      printStyleLog("Server Error", err, undefined);
     });
 }
 

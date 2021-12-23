@@ -204,13 +204,16 @@ function assetsClone() {
 
 /**
  * 服务器
+ * @param {boolean} open 是否自动打开浏览器
  */
-function server() {
+function server(open) {
   const app = express();
   const port = 3000;
   app.use(express.static(appConfig.dest));
+  const indexPath = path.resolve(appConfig.dest, "index.html");
+
   app.get("/", (req, res) => {
-    res.sendFile(path.resolve(appConfig.dest, "index.html"));
+    res.sendFile(indexPath);
   });
   app.get("/readme", (req, res) => {
     res.send(fs.readFileSync(path.resolve(__dirname, "README.md")).toString());
@@ -218,22 +221,36 @@ function server() {
   app.listen(port, () => {
     const url = `http://localhost:${port}`;
     taskLog("server", `App listening at ${url}`);
-    cp.exec("start " + url);
+    open && cp.exec("start " + url);
   });
+
+  // chokidar.watch(indexPath).on("change", (status, path) => {
+  //   server(false);
+  // });
+}
+
+async function build(watch) {
+  clearDist();
+  appInit();
+  assetsClone();
+  cssCompiler(watch);
+  await jsComplier(watch);
+  htmlTempRender(watch);
 }
 
 /**
  * 执行任务
  */
 async function runTasks() {
-  clearDist();
-  appInit();
-  assetsClone();
-  cssCompiler(true);
-  await jsComplier(true);
-  htmlTempRender(true);
-  server();
+  await build(true);
+  server(true);
 }
 
 // ===> app run
-runTasks();
+if (process.argv.includes("--server")) {
+  server(true);
+} else if (process.argv.includes("--build")) {
+  build(process.argv.includes("watch"));
+} else {
+  runTasks();
+}
