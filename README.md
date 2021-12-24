@@ -24,22 +24,46 @@ npm install gulp
 
 ### 样式编译
 
+安装`gulp-less`模块：
 
+```shell
+npm install gulp-less
+```
 
 ### 脚本编译
 
+这里使用的是`rollup`编译，所以安装在`gulp`中使用的插件：`gulp-better-rollup`：
 
+```shell
+npm install gulp-better-rollup
+```
+
+使用方法和`rollup`基本一致。
 
 ### 静态资源文件拷贝
 
-
+利用`gulp`模块自带的`src`和`dest`函数即可实现文件流的拷贝。
 
 ### 模板编译
 
+安装`gulp-ejs`来编译模板：
 
+```shell
+npm install gulp-ejs
+```
 
 ### 服务器
 
+服务器可以不受`gulp`控制，因此我们直接使用`express`模块即可。
+
 ### 文件清理
 
+安装`gulp-clean`来为我们清理缓存目录：
+
+```shell
+npm install gulp-clean
+```
+
 ### 文件监听
+
+由于每项任务都被`gulp`组织为`gulp`任务了，我们直接使用`gulp`模块中的`watch`方法进行文件监听，然后触发`gulp`任务的执行即可。
