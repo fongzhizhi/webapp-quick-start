@@ -10,11 +10,11 @@
 
 仓库主分支，项目资源包。
 
-### [main-ts](https://github.com/fongzhizhi/webapp-quick-start/main-ts)
+### [main-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/main-ts)
 
 ts版本的项目资源包。
 
-### [base](https://github.com/fongzhizhi/webapp-quick-start/base)
+### [base](https://github.com/fongzhizhi/webapp-quick-start/tree/base)
 
 基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，不使用自动化构建工具，手写项目编译运行逻辑，带你感受到“刀耕火种”的乐趣。
 
