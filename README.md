@@ -38,13 +38,13 @@ ts版本的项目资源包。
 
 > 听说是极速零配置Web应用打包工具
 
-基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入打包工具  [parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel) ，快速构建零配置的Web App。
+基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入打包工具  [parcel](https://www.parceljs.cn/) ，快速构建零配置的Web App。
 
 ### [vite](https://github.com/fongzhizhi/webapp-quick-start/tree/vite)
 
 > 号称下一代前端开发和构建工具的[vite](https://cn.vitejs.dev/)。
 
-基于仓库[主分支(ts)](https://github.com/fongzhizhi/webapp-quick-start/tree/main-ts)，引入打包工具[vite](https://github.com/fongzhizhi/webapp-quick-start/tree/vite)，快速启用你的Web App。
+基于仓库[主分支(ts)](https://github.com/fongzhizhi/webapp-quick-start/tree/main-ts)，引入打包工具[vite](https://cn.vitejs.dev/)，快速启用你的Web App。
 
 ### [webpack](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack)
 
@@ -55,7 +55,6 @@ ts版本的项目资源包。
 ### [webpack-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/webpack-ts)
 
 无 [typescript](https://www.tslang.cn/) 不欢。
-
 
 ## 快速启用
 
