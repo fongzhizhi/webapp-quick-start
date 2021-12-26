@@ -3,21 +3,39 @@
   "version": "1.0.0",
   "description": "切换分支，选择你的喜欢的构建工具流，快速启用你的前端应用。",
   "main": "index.js",
-  "dependencies": {
-    "axios": "^0.21.4",
-    "del": "^6.0.0",
-    "gulp": "^4.0.2",
-    "marked": "^4.0.5",
-    "prettier": "^2.5.1"
-  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write src/**/*.js --write *.js"
+    "prettier": "prettier --write src/**/*.js --write src/**/*.less --write config/*.js",
+    "build:dev": "webpack --config config/webpack.dev.js",
+    "build:prod": "webpack --config config/webpack.prod.js",
+    "dev": "webpack server --config config/webpack.dev.js",
+    "prod": "webpack server --config config/webpack.prod.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fongzhizhi/webapp-quick-start.git"
+  },
+  "dependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "babel-loader": "^8.2.3",
+    "css-loader": "^6.5.1",
+    "del": "^6.0.0",
+    "file-loader": "^6.2.0",
+    "gulp": "^4.0.2",
+    "html-loader": "^3.0.1",
+    "html-webpack-plugin": "^5.5.0",
+    "less": "^4.1.2",
+    "less-loader": "^10.2.0",
+    "marked": "^4.0.5",
+    "prettier": "^2.5.1",
+    "raw-loader": "^4.0.2",
+    "style-loader": "^3.3.1",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.1"
   },
   "keywords": [],
   "author": "https://github.com/fongzhizhi",
