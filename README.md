@@ -25,7 +25,11 @@ npm install parcel-bundler
 ```json
 "scripts": {
   "build": "parcel build public/index.html",
-  "dev": "parcel public/index.html --open"
+  "server": "node app.router.js",
+  "parcel:dev": "SET NODE_ENV=development && parcel public/index.html --open",
+  "parcel:prod": "SET NODE_ENV=production && parcel public/index.html --open",
+  "dev": "npm-run-all -p server parcel:dev",
+  "prod": "npm-run-all -p server parcel:prod"
 }
 ```
 
