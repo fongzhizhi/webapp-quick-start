@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write src/**/*.ts --write *.ts"
+    "prettier": "prettier --write src/**/*.ts --write src/**/*.less"
   },
   "repository": {
     "type": "git",
@@ -19,10 +19,11 @@
   },
   "homepage": "https://github.com/fongzhizhi/webapp-quick-start#readme",
   "dependencies": {
-    "typescript": "^4.5.2",
+    "@types/axios": "^0.14.0",
+    "@types/marked": "^4.0.1",
     "axios": "^0.21.4",
-    "del": "^6.0.0",
-    "gulp": "^4.0.2",
-    "marked": "^4.0.5"
+    "marked": "^4.0.5",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.2"
   }
 }
