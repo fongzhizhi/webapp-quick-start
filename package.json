@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write src/**/*.ts --write src/**/*.less"
+    "prettier": "prettier --write src/**/*.ts --write src/**/*.less --write *.js",
+    "build": "vite build",
+    "server": "node app.router.js",
+    "vite": "vite --open",
+    "dev": "npm-run-all -p server vite"
   },
   "repository": {
     "type": "git",
@@ -22,8 +26,12 @@
     "@types/axios": "^0.14.0",
     "@types/marked": "^4.0.1",
     "axios": "^0.21.4",
+    "express": "^4.17.2",
+    "less": "^4.1.2",
     "marked": "^4.0.5",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.2"
+    "typescript": "^4.5.2",
+    "vite": "^2.7.7"
   }
 }

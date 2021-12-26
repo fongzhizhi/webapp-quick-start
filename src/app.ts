@@ -1,3 +1,4 @@
+import "./styles/main.less";
 import { printStyleLog } from "./utils/util";
 import axios from "axios";
 import { marked } from "marked";
@@ -9,7 +10,7 @@ window.onload = () => {
 
 function loadReadme() {
   axios
-    .get("/readme")
+    .get("http://localhost:3030/readme")
     .then((res) => {
       if (res && res.data) {
         const readMeHtml = marked(res.data);
