@@ -13,19 +13,24 @@ const config = {
     clean: true,
   },
   target: "web",
+  devtool: false,
   /**模块化 */
   module: {
     rules: [
       {
         test: /\.(png|jpe?g|gif|svg|ico)$/,
-        use: {
-          loader: "url-loader",
-          options: {
-            limit: 8 * 1024,
-            esModule: false,
-            outputPath: "images/",
+        // type: 'asset/resource'
+        // type: 'asset/inline',
+        type: "asset",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 4 * 1024,
           },
         },
+      },
+      {
+        test: /\.(md|txt)$/,
+        type: "asset/source",
       },
       {
         test: /\.html$/,
@@ -45,10 +50,6 @@ const config = {
           },
         },
       },
-      {
-        test: /\.(md|txt)$/,
-        use: "raw-loader",
-      },
     ],
   },
   /**插件 */
@@ -57,12 +58,12 @@ const config = {
   devServer: {
     static: path.join(__dirname, "../dist"),
     compress: true,
-    hot: true,
+    // hot: true,
     port: 3000,
     open: true,
   },
   // others
-  // watch: true,
+  watch: true,
 };
 
 module.exports = config;
