@@ -30,10 +30,6 @@ ts版本的项目资源包。
 
 基于仓库[主分支](https://github.com/fongzhizhi/webapp-quick-start/tree/main)，引入自动化构建工具[gulp](https://www.gulpjs.com.cn/)，让你的工作流随意切换。
 
-### [gulp-ts](https://github.com/fongzhizhi/webapp-quick-start/tree/gulp-ts)
-
-[gulp](https://www.gulpjs.com.cn/) 搭配 [typescript](https://www.tslang.cn/) 食用更佳喔。
-
 ### [parcel](https://github.com/fongzhizhi/webapp-quick-start/tree/parcel)
 
 > 听说是极速零配置Web应用打包工具
