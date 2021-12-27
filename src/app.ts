@@ -1,5 +1,6 @@
+import "./styles/main.less";
 import { printStyleLog } from "./utils/util";
-import axios from "axios";
+import readme from "../README.md";
 import { marked } from "marked";
 
 window.onload = () => {
@@ -8,17 +9,8 @@ window.onload = () => {
 };
 
 function loadReadme() {
-  axios
-    .get("/readme")
-    .then((res) => {
-      if (res && res.data) {
-        const readMeHtml = marked(res.data);
-        document.getElementById("readme").innerHTML = readMeHtml;
-      }
-    })
-    .catch((err) => {
-      printStyleLog("Server Error", err);
-    });
+  const readMeHtml = marked(readme);
+  document.getElementById("readme").innerHTML = readMeHtml;
 }
 
 function doSomething() {

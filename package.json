@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write src/**/*.ts --write src/**/*.less"
+    "prettier": "prettier --write src/**/*.ts --write src/**/*.less --write config/**/*.js",
+    "build:dev": "webpack --config config/webpack.dev.js",
+    "build:prod": "webpack --config config/webpack.prod.js",
+    "dev": "webpack server --config config/webpack.dev.js",
+    "prod": "webpack server --config config/webpack.prod.js"
   },
   "repository": {
     "type": "git",
@@ -19,11 +23,19 @@
   },
   "homepage": "https://github.com/fongzhizhi/webapp-quick-start#readme",
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "@types/marked": "^4.0.1",
-    "axios": "^0.21.4",
+    "@types/webpack": "^5.28.0",
+    "css-loader": "^6.5.1",
+    "esbuild-loader": "^2.18.0",
+    "html-loader": "^3.0.1",
+    "html-webpack-plugin": "^5.5.0",
+    "less": "^4.1.2",
+    "less-loader": "^10.2.0",
     "marked": "^4.0.5",
     "prettier": "^2.5.1",
-    "typescript": "^4.5.2"
+    "style-loader": "^3.3.1",
+    "typescript": "^4.5.2",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.1"
   }
 }
