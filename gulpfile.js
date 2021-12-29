@@ -2,20 +2,12 @@ const path = require("path");
 const fs = require("fs");
 const cp = require("child_process");
 const { series, parallel, src, dest, watch } = require("gulp");
-const less = require("gulp-less");
-const cssnano = require("gulp-cssnano");
-const cssConcat = require("gulp-concat-css");
-const rename = require("gulp-rename");
-const clean = require("gulp-clean");
-const minify = require("gulp-minify");
-const rollup = require("gulp-better-rollup");
 const { babel } = require("@rollup/plugin-babel");
-const sourcemaps = require("gulp-sourcemaps");
 const resolve = require("rollup-plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
-const ejs = require("gulp-ejs");
 const express = require("express");
+const gulpPlugins = require('gulp-load-plugins')();
 
 /**
  * 全局配置
@@ -62,7 +54,7 @@ function destPath(relativePath) {
  * 清除缓存目录
  */
 function cleanDist() {
-  return src(appConfig.dest, { read: false, allowEmpty: true }).pipe(clean());
+  return src(appConfig.dest, { read: false, allowEmpty: true }).pipe(gulpPlugins.clean());
 }
 
 /**
@@ -71,14 +63,14 @@ function cleanDist() {
 function styleCompiler() {
   const plugins = [];
   // 编译
-  plugins.push(less());
+  plugins.push(gulpPlugins.less());
   // 合并
-  plugins.push(cssConcat(destPath(appConfig.css_path)));
+  plugins.push(gulpPlugins.concatCss(destPath(appConfig.css_path)));
   if (appConfig.isProd) {
     // 压缩
-    plugins.push(cssnano());
+    plugins.push(gulpPlugins.cssnano());
     // 重命名
-    plugins.push(rename({ suffix: ".min" }));
+    plugins.push(gulpPlugins.rename({ suffix: ".min" }));
     appConfig.css_path = appConfig.css_path.replace(/$\.css/, ".min.css");
   }
   // 输出
@@ -96,10 +88,12 @@ function styleCompiler() {
 function scriptCompiler() {
   const plugins = [];
   // sourceMap
-  !appConfig.isProd && plugins.push(sourcemaps.init());
+  !appConfig.isProd && plugins.push(gulpPlugins.sourcemaps.init());
   // 编译
   plugins.push(
-    rollup(
+    // gulpPlugins.eslint(),
+    // gulpPlugins.eslint.failAfterError(),
+    gulpPlugins.betterRollup(
       {
         plugins: [
           // 让rollup支持第三方库的引用
@@ -112,6 +106,7 @@ function scriptCompiler() {
             exclude: "node_modules/**",
             presets: ["@babel/preset-env"],
           }),
+
           json(),
         ],
       },
@@ -122,7 +117,7 @@ function scriptCompiler() {
   );
   if (appConfig.isProd) {
     // 压缩
-    plugins.push(minify());
+    plugins.push(gulpPlugins.minify());
     // 重命名
     plugins.push(rename({ suffix: ".min" }));
     appConfig.js_path = appConfig.css_path.replace(/$\.js/, ".min.js");
@@ -151,7 +146,7 @@ function assetsCopy() {
  */
 function htmlCompiler() {
   return src(appConfig.html_paths)
-    .pipe(ejs(appConfig))
+    .pipe(gulpPlugins.ejs(appConfig))
     .pipe(dest(appConfig.dest));
 }
 
@@ -223,4 +218,4 @@ exports.prod = series(exports.buildProd, exports.server);
 /**
  * 测试
  */
-exports.test = parallel(styleCompiler);
+exports.test = parallel(scriptCompiler);
