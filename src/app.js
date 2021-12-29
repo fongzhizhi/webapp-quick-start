@@ -4,9 +4,8 @@ import marked from "marked";
 
 window.onload = () => {
   loadReadme();
-  doSomething()
+  doSomething();
 };
-
 
 function loadReadme() {
   axios

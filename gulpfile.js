@@ -7,7 +7,7 @@ const resolve = require("rollup-plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
 const express = require("express");
-const gulpPlugins = require('gulp-load-plugins')();
+const gulpPlugins = require("gulp-load-plugins")();
 
 /**
  * 全局配置
@@ -54,7 +54,9 @@ function destPath(relativePath) {
  * 清除缓存目录
  */
 function cleanDist() {
-  return src(appConfig.dest, { read: false, allowEmpty: true }).pipe(gulpPlugins.clean());
+  return src(appConfig.dest, { read: false, allowEmpty: true }).pipe(
+    gulpPlugins.clean()
+  );
 }
 
 /**
