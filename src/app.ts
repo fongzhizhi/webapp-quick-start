@@ -22,8 +22,10 @@ function loadReadme() {
     });
 }
 
+/**
+ * print something
+ */
 function doSomething() {
-  // print something
   printStyleLog(
     "Jinx",
     {

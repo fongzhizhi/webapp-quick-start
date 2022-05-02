@@ -5,14 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write src/**/*.ts --write src/**/*.less --write *.js",
+    "prepare": "husky install",
+    "lint-staged": "lint-staged",
+    "prettier": "prettier --write",
     "build": "vite build",
     "server": "node app.router.js",
     "vite": "vite --open",
     "dev": "npm-run-all -p server vite"
   },
-  "lint-steged":{
-    "*": "prettier --write"
+  "lint-staged": {
+    "src/**/*": "prettier --write"
   },
   "repository": {
     "type": "git",
