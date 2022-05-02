@@ -11,6 +11,9 @@
     "vite": "vite --open",
     "dev": "npm-run-all -p server vite"
   },
+  "lint-steged":{
+    "*": "prettier --write"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fongzhizhi/webapp-quick-start.git"
@@ -27,7 +30,9 @@
     "@types/marked": "^4.0.1",
     "axios": "^0.21.4",
     "express": "^4.17.2",
+    "husky": "^7.0.4",
     "less": "^4.1.2",
+    "lint-staged": "^12.4.1",
     "marked": "^4.0.5",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.5.1",
